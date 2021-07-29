@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>L.Control.ZoomBar</title>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <!-- the control code, just these two files -->
+    <script type="text/javascript" src="leaflet-control-zoombar.js"></script>
+    <link rel="stylesheet" href="leaflet-control-zoombar.css" />
+
+    <!-- the remaining HTML and JS is for the demo -->
+    <style type="text/css" >
+    body {
+    	padding: 0;
+	margin: 0;
+    }
+    html, body, #map {
+	height: 100%;
+    }
+    </style>
+    <style type="text/css">
+    /* hack for Leaflet 1.7.1 which only flashes ARIA outlines (though keeps focus) which misses the point of ARIA outlines */
+    .leaflet-container :focus {
+        outline-color: -webkit-focus-ring-color !important;
+        outline-style: auto !important;
+        outline-width: thin !important;
+        outline: revert !important;
+    }
+    </style>
+
+    <script type="text/javascript">
+    function init() {
+    	var map = L.map('map', {
+            maxZoom: 18,
+            minZoom: 6,
+            keyboard: true,
+        });
+    	L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+    	    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    	}).addTo(map);
+        map.setView([37.7833,-122.4167], 12);
+
+        var zoombar = new L.Control.ZoomBar({
+            // for the home button, give a latlng and a zoom or a bounds
+            // homeBounds: [[37.64, -122.64], [37.92, -122.19]],
+            homeLatLng: [37.7833,-122.4167],
+            homeZoom: 12,
+            // give custom HTML for the home button
+            zoomHomeText: '<img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/Home_Icon.svg" style="height: 20px; width: 20px; margin-top: 4px;" />',
+        }).addTo(map);
+    }
+    </script>
+</head>
+<body onLoad="init()">
+
+    <div id="map" tabindex="0"></div>
+
+</body>
+</html>
