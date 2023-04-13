@@ -1,50 +1,79 @@
 L.Control.ZoomBar = L.Control.extend({
-    options: {
-        // zoom settings: latlngzoom or a bounds
-        homeBounds: null,
-        homeLatLng: null,
-        homeZoom: 1,
-        // the button text/html and tooltips
-        zoomInText: '+',
-        zoomInTitle: 'Zoom in',
-        zoomOutText: '-',
-        zoomOutTitle: 'Zoom out',
-        zoomHomeText: '&#927;',
-        zoomHomeTitle: 'Zoom home',
-        // general settings
-        position: 'topright',
-    },
+    initialize: function (options) {
+        const settings = Object.assign({
+            // zoom settings: latlngzoom or a bounds
+            homeBounds: null,
+            homeLatLng: null,
+            homeZoom: 1,
+            // tooltip / ARIA text
+            zoomInTitle: 'Zoom in',
+            zoomHomeTitle: 'Reset to home',
+            zoomOutTitle: 'Zoom out',
+            // general settings
+            position: 'topright',
+        }, options);
 
-    initialize: function(options) {
-        if (! options.homeBounds && ! options.homeLatLng ) throw "ZoomBar missing required homeBounds or homeLatLng";
-        L.Util.setOptions(this, options);
+        if (! settings.homeBounds && ! settings.homeLatLng) throw "ZoomBar missing required homeBounds or homeLatLng";
+        L.Util.setOptions(this, settings);
     },
 
     onAdd: function (map) {
-        this.container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-bar');
-        this._zoomInButton = this._createButton(this.options.zoomInText, this.options.zoomInTitle, 'leaflet-control-zoom-in', this.container, this._zoomIn);
-        this._zoomHomeButton = this._createButton(this.options.zoomHomeText, this.options.zoomHomeTitle, 'leaflet-control-zoom-home', this.container, this._zoomHome);
-        this._zoomOutButton  = this._createButton(this.options.zoomOutText, this.options.zoomOutTitle, 'leaflet-control-zoom-out',  this.container, this._zoomOut);
+        this._map = map;
+        this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-bar');
 
-        this._updateDisabled();
+        // Zoom In
+        this._inbutton = L.DomUtil.create('button', 'leaflet-control-zoom-zoomin', this._container);
+        this._inbutton.title = this.options.zoomInTitle;
+        this._inbutton.setAttribute('aria-label', this.options.zoomInTitle);
+        this._inbutton.innerText = '+';
+
+        L.DomEvent.on(this._inbutton, 'click', () => {
+            this.zoomIn();
+        });
+        L.DomEvent.on(this._inbutton, 'mousedown click dblclick', L.DomEvent.stopPropagation);
+
+        // Zoom Home
+        this._homebutton = L.DomUtil.create('button', 'leaflet-control-zoom-zoomhome', this._container);
+        this._homebutton.title = this.options.zoomHomeTitle;
+        this._homebutton.setAttribute('aria-label', this.options.zoomHomeTitle);
+
+        L.DomEvent.on(this._homebutton, 'click', () => {
+            this.zoomHome();
+        });
+        L.DomEvent.on(this._homebutton, 'mousedown click dblclick', L.DomEvent.stopPropagation);
+
+        // Zoom Out
+        this._outbutton = L.DomUtil.create('button', 'leaflet-control-zoom-zoomout', this._container);
+        this._outbutton.title = this.options.zoomOutTitle;
+        this._outbutton.setAttribute('aria-label', this.options.zoomOutTitle);
+        this._outbutton.innerText = '-';
+
+        L.DomEvent.on(this._outbutton, 'click', () => {
+            this.zoomOut();
+        });
+        L.DomEvent.on(this._outbutton, 'mousedown click dblclick', L.DomEvent.stopPropagation);
+
+        // when zoom level changes, disable the +- buttons if we're at max/min zoom
         map.on('zoomend zoomlevelschange', this._updateDisabled, this);
+        this._updateDisabled();
 
-        return this.container;
+        // done!
+        return this._container;
     },
 
     onRemove: function (map) {
         map.off('zoomend zoomlevelschange', this._updateDisabled, this);
     },
 
-    _zoomIn: function (e) {
-        this._map.zoomIn(e.shiftKey ? 3 : 1);
+    zoomIn: function () {
+        this._map.zoomIn(1);
     },
 
-    _zoomOut: function (e) {
-        this._map.zoomOut(e.shiftKey ? 3 : 1);
+    zoomOut: function () {
+        this._map.zoomOut(1);
     },
 
-    _zoomHome: function () {
+    zoomHome: function () {
         if (this.options.homeBounds) {
             this._map.fitBounds(this.options.homeBounds);
         }
@@ -53,33 +82,15 @@ L.Control.ZoomBar = L.Control.extend({
         }
     },
 
-    _createButton: function (html, title, className, container, fn) {
-        var link = L.DomUtil.create('a', className, container);
-        link.innerHTML = html;
-        link.href = '#';
-        link.title = title;
-
-        L.DomEvent
-            .on(link, 'mousedown dblclick', L.DomEvent.stopPropagation)
-            .on(link, 'click', L.DomEvent.stop)
-            .on(link, 'click', fn, this)
-            .on(link, 'click', this._refocusOnMap, this);
-
-        return link;
-    },
-
     _updateDisabled: function () {
-        var map = this._map,
-            className = 'leaflet-disabled';
+        const z = this._map.getZoom();
+        const minz = map.getMinZoom();
+        const maxz = map.getMaxZoom();
 
-        L.DomUtil.removeClass(this._zoomInButton, className);
-        L.DomUtil.removeClass(this._zoomOutButton, className);
+        if (z <= minz) L.DomUtil.addClass(this._outbutton, 'leaflet-control-zoom-disabled');
+        else L.DomUtil.removeClass(this._outbutton, 'leaflet-control-zoom-disabled');
 
-        if (map._zoom === map.getMinZoom()) {
-            L.DomUtil.addClass(this._zoomOutButton, className);
-        }
-        if (map._zoom === map.getMaxZoom()) {
-            L.DomUtil.addClass(this._zoomInButton, className);
-        }
+        if (z >= maxz) L.DomUtil.addClass(this._inbutton, 'leaflet-control-zoom-disabled');
+        else L.DomUtil.removeClass(this._inbutton, 'leaflet-control-zoom-disabled');
     }
 });

@@ -32,24 +32,24 @@
     </style>
 
     <script type="text/javascript">
+    var map, zoombar;
     function init() {
-    	var map = L.map('map', {
-            maxZoom: 18,
-            minZoom: 6,
-            keyboard: true,
-        });
+    	map = L.map('map');
     	L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
     	    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
     	}).addTo(map);
         map.setView([37.7833,-122.4167], 12);
 
-        var zoombar = new L.Control.ZoomBar({
-            // for the home button, give a latlng and a zoom or a bounds
+        zoombar = new L.Control.ZoomBar({
+            // for the home button, give a L.LatLngBounds or a bounds-like literal...
             // homeBounds: [[37.64, -122.64], [37.92, -122.19]],
+            // ... or a L.LatLng or literal, combined with a zoom level
             homeLatLng: [37.7833,-122.4167],
             homeZoom: 12,
-            // give custom HTML for the home button
-            zoomHomeText: '<img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/Home_Icon.svg" style="height: 20px; width: 20px; margin-top: 4px;" />',
+            // you can also customize tooltips, which are also the ARIA labels, to your own language or phrasing
+            zoomInTitle: 'Zoom the map in a step',
+            zoomOutTitle: 'Zoom the map out a step',
+            zoomHomeTitle: 'Reset to original view',
         }).addTo(map);
     }
     </script>

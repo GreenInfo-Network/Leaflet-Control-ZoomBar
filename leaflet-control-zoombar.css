@@ -1,3 +1,42 @@
-div.leaflet-control-zoom a {
-    font-size: 18px;
+div.leaflet-control-zoom {
+}
+
+div.leaflet-control-zoom button {
+    display: block;
+    border: none;
+    cursor: pointer;
+    transition: background 250ms ease-in-out, transform 150ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color: black;
+    background-color: white;
+}
+div.leaflet-control-zoom button {
+    width: 30px;
+    height: 30px;
+    color: black;
+}
+div.leaflet-control-zoom button.leaflet-control-zoom-zoomin {
+    font-size: 22px;
+    font-family: monospace;
+    font-weight: bold;
+    line-height: 20px;
+}
+div.leaflet-control-zoom button.leaflet-control-zoom-zoomhome {
+    border-top: 1px solid silver;
+    border-bottom: 1px solid silver;
+
+    background-image: url(https://upload.wikimedia.org/wikipedia/commons/e/e6/Home_Icon.svg);
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+div.leaflet-control-zoom button.leaflet-control-zoom-zoomout {
+    font-size: 22px;
+    font-family: monospace;
+    font-weight: bold;
+    line-height: 20px;
+}
+div.leaflet-control-zoom button.leaflet-control-zoom-disabled {
+    color: silver;
 }
