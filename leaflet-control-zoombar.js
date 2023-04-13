@@ -23,6 +23,7 @@ L.Control.ZoomBar = L.Control.extend({
 
         // Zoom In
         this._inbutton = L.DomUtil.create('button', 'leaflet-control-zoom-zoomin', this._container);
+        this._inbutton.type = 'button';
         this._inbutton.title = this.options.zoomInTitle;
         this._inbutton.setAttribute('aria-label', this.options.zoomInTitle);
         this._inbutton.innerText = '+';
@@ -34,6 +35,7 @@ L.Control.ZoomBar = L.Control.extend({
 
         // Zoom Home
         this._homebutton = L.DomUtil.create('button', 'leaflet-control-zoom-zoomhome', this._container);
+        this._homebutton.type = 'button';
         this._homebutton.title = this.options.zoomHomeTitle;
         this._homebutton.setAttribute('aria-label', this.options.zoomHomeTitle);
 
@@ -44,6 +46,7 @@ L.Control.ZoomBar = L.Control.extend({
 
         // Zoom Out
         this._outbutton = L.DomUtil.create('button', 'leaflet-control-zoom-zoomout', this._container);
+        this._outbutton.type = 'button';
         this._outbutton.title = this.options.zoomOutTitle;
         this._outbutton.setAttribute('aria-label', this.options.zoomOutTitle);
         this._outbutton.innerText = '-';
