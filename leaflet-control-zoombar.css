@@ -16,6 +16,9 @@ div.leaflet-control-zoom button {
     height: 30px;
     color: black;
 }
+div.leaflet-control-zoom button:focus {
+  outline: 2px solid black !important;
+}
 div.leaflet-control-zoom button.leaflet-control-zoom-zoomin {
     font-size: 22px;
     font-family: monospace;
