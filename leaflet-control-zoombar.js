@@ -87,8 +87,8 @@ L.Control.ZoomBar = L.Control.extend({
 
     _updateDisabled: function () {
         const z = this._map.getZoom();
-        const minz = map.getMinZoom();
-        const maxz = map.getMaxZoom();
+        const minz = this._map.getMinZoom();
+        const maxz = this._map.getMaxZoom();
 
         if (z <= minz) L.DomUtil.addClass(this._outbutton, 'leaflet-control-zoom-disabled');
         else L.DomUtil.removeClass(this._outbutton, 'leaflet-control-zoom-disabled');
